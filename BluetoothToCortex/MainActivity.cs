@@ -13,7 +13,9 @@ namespace BluetoothToCortex
     public class MainActivity : Activity
     {
         // Local Bluetooth adapter
-        private BluetoothAdapter bluetoothAdapter = null;
+        private BluetoothAdapter mBluetoothAdapter = null;
+        private Button mBtBtn = null;
+        private ListView mDeviceListView = null;
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -22,27 +24,34 @@ namespace BluetoothToCortex
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
 
+            // Get local Bluetooth adapter
+            mBluetoothAdapter = BluetoothAdapter.DefaultAdapter;
+
             // Get our button from the layout resource,
             // and attach an event to it
-            Button mBtBtn = FindViewById<Button>(Resource.Id.FindBtButton);
+            mBtBtn = FindViewById<Button>(Resource.Id.FindBtButton);
+            mDeviceListView = FindViewById<ListView>(Resource.Id.deviceListView);
 
             //button.Click += delegate { button.Text = string.Format("{0} clicks!", count++); };
             mBtBtn.Click += delegate
             {
+                // If the adapter is null, then Bluetooth is not supported
+                if (mBluetoothAdapter == null)
+                {
+                    Toast.MakeText(this, "Bluetooth is not available", ToastLength.Long).Show();
+                    return;
+                }
+                else if (!mBluetoothAdapter.IsEnabled)
+                {
+                    Toast.MakeText(this, "Bluetooth adapter is not enabled.", ToastLength.Long).Show();
+                    return;
+                }
+                // find bluetooth devices and show them on the list
+                else
+                {
 
+                }
             };
-
-            // Get local Bluetooth adapter
-            bluetoothAdapter = BluetoothAdapter.DefaultAdapter;
-
-            // If the adapter is null, then Bluetooth is not supported
-            if (bluetoothAdapter == null)
-            {
-                Toast.MakeText(this, "Bluetooth is not available", ToastLength.Long).Show();
-                //Finish();
-                return;
-            }
-
         }
     }
 }
