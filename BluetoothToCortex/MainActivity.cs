@@ -19,6 +19,7 @@ namespace BluetoothToCortex
 
         protected override void OnCreate(Bundle bundle)
         {
+            
             base.OnCreate(bundle);
 
             // Set our view from the "main" layout resource
@@ -41,15 +42,13 @@ namespace BluetoothToCortex
                     Toast.MakeText(this, "Bluetooth is not available", ToastLength.Long).Show();
                     return;
                 }
-                else if (!mBluetoothAdapter.IsEnabled)
+
+                if (!mBluetoothAdapter.IsEnabled)
                 {
+                    //Intent enableBtIntent = new Intent(BluetoothAdapter.ActionRequestEnable);
+                    //StartActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
                     Toast.MakeText(this, "Bluetooth adapter is not enabled.", ToastLength.Long).Show();
                     return;
-                }
-                // find bluetooth devices and show them on the list
-                else
-                {
-
                 }
             };
         }

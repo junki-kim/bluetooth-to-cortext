@@ -9,9 +9,9 @@
         android:layout_height="wrap_content"
         android:text="@string/FindBt" />
     <ListView
+        android:id="@+id/deviceListView"
         android:minWidth="25px"
         android:minHeight="25px"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/deviceListView" />
+        android:layout_height="match_parent" />
 </LinearLayout>
