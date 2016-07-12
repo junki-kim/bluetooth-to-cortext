@@ -22,6 +22,9 @@ namespace BluetoothToCortex
         private Button mBtBtn = null;
         private ListView mDeviceListView = null;
 
+        // Return Intent extra
+        public const string EXTRA_DEVICE_ADDRESS = "device_address";
+
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -48,13 +51,13 @@ namespace BluetoothToCortex
             // Find and setup list view
             mDeviceListView = FindViewById<ListView>(Resource.Id.deviceListView);
             mDeviceListView.Adapter = newDevicesArrayAdapter;
-            // TODO Implement click event function
-            //mDeviceListView.ItemClick += devicelistClick;
+            mDeviceListView.ItemClick += DeviceListClick;
 
             
             // Register for broadcasts when a device is discovered
             receiver = new BTReceiver(this);
             var filter = new IntentFilter(BluetoothDevice.ActionFound);
+            filter.AddAction(BluetoothAdapter.ActionDiscoveryFinished);
             RegisterReceiver(receiver, filter);
             
 
@@ -75,9 +78,23 @@ namespace BluetoothToCortex
                     Toast.MakeText(this, "Bluetooth adapter is not enabled.", ToastLength.Long).Show();
                     return;
                 }
-
+                newDevicesArrayAdapter.Clear();
                 DoDiscovery();
             };
+        }//oncreate
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            // Make sure we're not doing discovery anymore
+            if (mBluetoothAdapter != null)
+            {
+                mBluetoothAdapter.CancelDiscovery();
+            }
+
+            // Unregister broadcast listeners
+            UnregisterReceiver(receiver);
         }
 
         /// <summary>
@@ -100,6 +117,28 @@ namespace BluetoothToCortex
 
             // Request discover from BluetoothAdapter
             mBluetoothAdapter.StartDiscovery();
+        }
+
+        /// <summary>
+		/// The on-click listener for all devices in the ListViews
+		/// </summary>
+		void DeviceListClick(object sender, AdapterView.ItemClickEventArgs e)
+        {
+            // Cancel discovery because it's costly and we're about to connect
+            mBluetoothAdapter.CancelDiscovery();
+
+            // Get the device MAC address, which is the last 17 chars in the View
+            var info = (e.View as TextView).Text.ToString();
+            var address = info.Substring(info.Length - 17);
+
+            // Create the result Intent and include the MAC address
+            Intent intent = new Intent();
+            intent.PutExtra(EXTRA_DEVICE_ADDRESS, address);
+
+            // Set result and finish this Activity
+            //SetResult(Result.Ok, intent);
+            //Finish();
+            // TODO : implement connection
         }
 
         public class BTReceiver : BroadcastReceiver
