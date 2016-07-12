@@ -131,9 +131,12 @@ namespace BluetoothToCortex
             var info = (e.View as TextView).Text.ToString();
             var address = info.Substring(info.Length - 17);
 
+            // Get the BLuetoothDevice object
+            BluetoothDevice device = mBluetoothAdapter.GetRemoteDevice(address);
+
             // Create the result Intent and include the MAC address
-            Intent intent = new Intent();
-            intent.PutExtra(EXTRA_DEVICE_ADDRESS, address);
+            //Intent intent = new Intent();
+            //intent.PutExtra(EXTRA_DEVICE_ADDRESS, address);
 
             // Set result and finish this Activity
             //SetResult(Result.Ok, intent);
