@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using Java.Util;
 using Android.App;
 using Android.Content;
 using Android.Runtime;
@@ -7,12 +9,16 @@ using Android.Widget;
 using Android.OS;
 using Android.Bluetooth;
 using Android.Util;
+using Java.Lang;
 
 namespace BluetoothToCortex
 {
     [Activity(Label = "@string/ApplicationName", MainLauncher = true, Icon = "@drawable/icon")]
     public class MainActivity : Activity
     {
+        //TAG
+        public static string TAG = "BT_SENDER";
+
         // Local Bluetooth adapter
         private BluetoothAdapter mBluetoothAdapter = null;
         private static ArrayAdapter<string> pairedDevicesArrayAdapter;
@@ -27,6 +33,11 @@ namespace BluetoothToCortex
         // Return Intent extra
         public const string EXTRA_DEVICE_ADDRESS = "device_address";
 
+        //socket
+        private BluetoothSocket mSocket;
+        private static UUID applicationUUID = UUID.FromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
+        private Stream mOutputStream;
+        private Stream mInputStream;
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -51,7 +62,7 @@ namespace BluetoothToCortex
             // Find and set up the ListView for paired devices
             mPairedListView = FindViewById<ListView>(Resource.Id.pairedDeviceListView);
             mPairedListView.Adapter = pairedDevicesArrayAdapter;
-            mPairedListView.ItemClick += DeviceListClick;
+            mPairedListView.ItemClick += PairedListClick;
 
             // Find and setup list view
             mDeviceListView = FindViewById<ListView>(Resource.Id.deviceListView);
@@ -100,7 +111,7 @@ namespace BluetoothToCortex
             }
             else
             {
-                String noDevices = Resources.GetText(Resource.String.none_paired);
+                string noDevices = Resources.GetText(Resource.String.none_paired);
                 pairedDevicesArrayAdapter.Add(noDevices);
             }
 
@@ -142,10 +153,10 @@ namespace BluetoothToCortex
             mBluetoothAdapter.StartDiscovery();
         }
 
-        /// <summary>
-		/// The on-click listener for all devices in the ListViews
-		/// </summary>
-		void DeviceListClick(object sender, AdapterView.ItemClickEventArgs e)
+        /*
+         * On click listener for dectected device list
+         */
+        void DeviceListClick(object sender, AdapterView.ItemClickEventArgs e)
         {
             // Cancel discovery because it's costly and we're about to connect
             mBluetoothAdapter.CancelDiscovery();
@@ -168,7 +179,115 @@ namespace BluetoothToCortex
             // TODO : implement connection
         }
 
-        public class BTReceiver : BroadcastReceiver
+        /*
+         * On click listener for paired device.
+         */
+        void PairedListClick(object sender, AdapterView.ItemClickEventArgs e)
+        {
+            // Get the device MAC address, which is the last 17 chars in the View
+            var info = (e.View as TextView).Text.ToString();
+            var address = info.Substring(info.Length - 17);
+            var name = info.Substring(0, info.Length - 17);
+
+            // Get the BLuetoothDevice object
+            BluetoothDevice device = mBluetoothAdapter.GetRemoteDevice(address);
+            //connectToSelectdDevice(device);
+        }
+
+        // TODO :: thread로 돌려야 한다
+        void connectToSelectdDevice(BluetoothDevice device)
+        {
+            // BT module UUID 입력 필요
+            UUID uuid = UUID.FromString("00001101-0000-1000-8000-00805f9b34fb");
+
+            try
+            {
+                // 소켓 생성
+                mSocket = device.CreateRfcommSocketToServiceRecord(uuid);
+                // RFCOMM 채널을 통한 연결
+                mSocket.Connect();
+
+                // 데이터 송수신을 위한 스트림 열기
+                mOutputStream = mSocket.OutputStream;
+                mInputStream = mSocket.InputStream;
+
+                // 데이터 수신 준비
+                //beginListenForData();
+                // Start the thread to connect with the given device
+                ConnectThread connectThread = new ConnectThread(device);
+                connectThread.Start();
+            }
+            catch (System.Exception e)
+            {
+                // 블루투스 연결 중 오류 발생
+                Log.Debug("CONNECTION",e.ToString());
+                //Finish();   // 어플 종료
+            }
+        }
+
+        protected class ConnectThread : Thread
+        {
+            private BluetoothSocket mmSocket;
+            private BluetoothDevice mmDevice;
+
+            public ConnectThread(BluetoothDevice device)
+            {
+                mmDevice = device;
+                BluetoothSocket tmp = null;
+
+                // Get a BluetoothSocket for a connection with the
+                // given BluetoothDevice
+                try
+                {
+                    tmp = device.CreateRfcommSocketToServiceRecord(applicationUUID);
+                }
+                catch (Java.IO.IOException e)
+                {
+                    Log.Error(TAG, "create() failed", e);
+                }
+                mmSocket = tmp;
+            }
+
+            public override void Run()
+            {
+                Log.Info(TAG, "BEGIN mConnectThread");
+                Name = "ConnectThread";
+                // Make a connection to the BluetoothSocket
+                try
+                {
+                    // This is a blocking call and will only return on a
+                    // successful connection or an exception
+                    mmSocket.Connect();
+                }
+                catch (Java.IO.IOException e)
+                {
+                    try
+                    {
+                        mmSocket.Close();
+                    }
+                    catch (Java.IO.IOException e2)
+                    {
+                        Log.Error(TAG, "unable to close() socket during connection failure", e2);
+                    }
+                    return;
+                }
+            }
+
+            public void Cancel()
+            {
+                try
+                {
+                    mmSocket.Close();
+                }
+                catch (Java.IO.IOException e)
+                {
+                    Log.Error(TAG, "close() of connect socket failed", e);
+                }
+            }
+        }
+
+
+            public class BTReceiver : BroadcastReceiver
         {
             Activity _sender;
 
