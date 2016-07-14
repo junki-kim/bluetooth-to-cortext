@@ -63,14 +63,17 @@ namespace BluetoothToCortex
 			// aapt resource value: 0x7f050000
 			public const int FindBtButton = 2131034112;
 			
-			// aapt resource value: 0x7f050001
-			public const int deviceListView = 2131034113;
-			
 			// aapt resource value: 0x7f050003
-			public const int pairedDevice = 2131034115;
+			public const int detectedDevice = 2131034115;
+			
+			// aapt resource value: 0x7f050004
+			public const int deviceListView = 2131034116;
+			
+			// aapt resource value: 0x7f050001
+			public const int pairedDevice = 2131034113;
 			
 			// aapt resource value: 0x7f050002
-			public const int textView1 = 2131034114;
+			public const int pairedDeviceListView = 2131034114;
 			
 			static Id()
 			{
@@ -119,6 +122,9 @@ namespace BluetoothToCortex
 			// aapt resource value: 0x7f04000f
 			public const int connect = 2130968591;
 			
+			// aapt resource value: 0x7f040011
+			public const int dectected = 2130968593;
+			
 			// aapt resource value: 0x7f040010
 			public const int discoverable = 2130968592;
 			
@@ -130,6 +136,9 @@ namespace BluetoothToCortex
 			
 			// aapt resource value: 0x7f040003
 			public const int not_connected = 2130968579;
+			
+			// aapt resource value: 0x7f040012
+			public const int paired = 2130968594;
 			
 			// aapt resource value: 0x7f040008
 			public const int scanning = 2130968584;

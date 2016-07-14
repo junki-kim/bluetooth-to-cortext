@@ -22,7 +22,7 @@ namespace BluetoothToCortex
         // views
         private Button mBtBtn = null;
         private ListView mDeviceListView = null;
-        private TextView mPairedDevice = null;
+        private ListView mPairedListView = null;
 
         // Return Intent extra
         public const string EXTRA_DEVICE_ADDRESS = "device_address";
@@ -47,9 +47,11 @@ namespace BluetoothToCortex
             // Get our button from the layout resource,
             // and attach an event to it
             mBtBtn = FindViewById<Button>(Resource.Id.FindBtButton);
-            mPairedDevice = FindViewById<TextView>(Resource.Id.pairedDevice);
-            //mDeviceListView = FindViewById<ListView>(Resource.Id.deviceListView);
 
+            // Find and set up the ListView for paired devices
+            mPairedListView = FindViewById<ListView>(Resource.Id.pairedDeviceListView);
+            mPairedListView.Adapter = pairedDevicesArrayAdapter;
+            mPairedListView.ItemClick += DeviceListClick;
 
             // Find and setup list view
             mDeviceListView = FindViewById<ListView>(Resource.Id.deviceListView);
@@ -84,6 +86,24 @@ namespace BluetoothToCortex
                 newDevicesArrayAdapter.Clear();
                 DoDiscovery();
             };
+
+            // Get a set of currently paired devices
+            var pairedDevices = mBluetoothAdapter.BondedDevices;
+
+            // If there are paired devices, add each one to the ArrayAdapter
+            if (pairedDevices.Count > 0)
+            {
+                foreach (var device in pairedDevices)
+                {
+                    pairedDevicesArrayAdapter.Add(device.Name + "\n" + device.Address);
+                }
+            }
+            else
+            {
+                String noDevices = Resources.GetText(Resource.String.none_paired);
+                pairedDevicesArrayAdapter.Add(noDevices);
+            }
+
         }//oncreate
 
         protected override void OnDestroy()
@@ -134,8 +154,6 @@ namespace BluetoothToCortex
             var info = (e.View as TextView).Text.ToString();
             var address = info.Substring(info.Length - 17);
             var name = info.Substring(0, info.Length - 17);
-            mPairedDevice.SetSingleLine(true);
-            mPairedDevice.Text = name + " || " + address;
 
             // Get the BLuetoothDevice object
             BluetoothDevice device = mBluetoothAdapter.GetRemoteDevice(address);
