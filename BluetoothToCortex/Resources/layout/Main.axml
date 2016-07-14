@@ -37,8 +37,8 @@
            android:layout_margin="3dp"
            android:gravity="center" />
     <TextView
-           android:id="@+id/paired_device"
-           android:text="Name: XXX // Address : XXX_XXX_XXX"
+           android:id="@+id/pairedDevice"
+           android:text="No Device Paired"
            android:textColor="#000000"
            android:textSize="14sp"
            android:layout_width="match_parent"

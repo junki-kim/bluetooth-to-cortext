@@ -67,7 +67,7 @@ namespace BluetoothToCortex
 			public const int deviceListView = 2131034113;
 			
 			// aapt resource value: 0x7f050003
-			public const int paired_device = 2131034115;
+			public const int pairedDevice = 2131034115;
 			
 			// aapt resource value: 0x7f050002
 			public const int textView1 = 2131034114;

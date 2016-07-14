@@ -19,8 +19,10 @@ namespace BluetoothToCortex
         private static ArrayAdapter<string> newDevicesArrayAdapter;
         private BTReceiver receiver;
 
+        // views
         private Button mBtBtn = null;
         private ListView mDeviceListView = null;
+        private TextView mPairedDevice = null;
 
         // Return Intent extra
         public const string EXTRA_DEVICE_ADDRESS = "device_address";
@@ -45,6 +47,7 @@ namespace BluetoothToCortex
             // Get our button from the layout resource,
             // and attach an event to it
             mBtBtn = FindViewById<Button>(Resource.Id.FindBtButton);
+            mPairedDevice = FindViewById<TextView>(Resource.Id.pairedDevice);
             //mDeviceListView = FindViewById<ListView>(Resource.Id.deviceListView);
 
 
@@ -126,10 +129,13 @@ namespace BluetoothToCortex
         {
             // Cancel discovery because it's costly and we're about to connect
             mBluetoothAdapter.CancelDiscovery();
-
+        
             // Get the device MAC address, which is the last 17 chars in the View
             var info = (e.View as TextView).Text.ToString();
             var address = info.Substring(info.Length - 17);
+            var name = info.Substring(0, info.Length - 17);
+            mPairedDevice.SetSingleLine(true);
+            mPairedDevice.Text = name + " || " + address;
 
             // Get the BLuetoothDevice object
             BluetoothDevice device = mBluetoothAdapter.GetRemoteDevice(address);
