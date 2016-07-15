@@ -41,7 +41,7 @@ namespace BluetoothToCortex
 
         protected override void OnCreate(Bundle bundle)
         {
-            
+
             base.OnCreate(bundle);
 
             // Set our view from the "main" layout resource
@@ -69,13 +69,13 @@ namespace BluetoothToCortex
             mDeviceListView.Adapter = newDevicesArrayAdapter;
             mDeviceListView.ItemClick += DeviceListClick;
 
-            
+
             // Register for broadcasts when a device is discovered
-            receiver = new BTReceiver(this);
+            receiver = new BTReceiver(this, newDevicesArrayAdapter);
             var filter = new IntentFilter(BluetoothDevice.ActionFound);
             filter.AddAction(BluetoothAdapter.ActionDiscoveryFinished);
             RegisterReceiver(receiver, filter);
-            
+
 
             //button.Click += delegate { button.Text = string.Format("{0} clicks!", count++); };
             mBtBtn.Click += delegate
@@ -160,7 +160,7 @@ namespace BluetoothToCortex
         {
             // Cancel discovery because it's costly and we're about to connect
             mBluetoothAdapter.CancelDiscovery();
-        
+
             // Get the device MAC address, which is the last 17 chars in the View
             var info = (e.View as TextView).Text.ToString();
             var address = info.Substring(info.Length - 17);
@@ -194,136 +194,8 @@ namespace BluetoothToCortex
             //connectToSelectdDevice(device);
         }
 
-        // TODO :: thread로 돌려야 한다
-        void connectToSelectdDevice(BluetoothDevice device)
-        {
-            // BT module UUID 입력 필요
-            UUID uuid = UUID.FromString("00001101-0000-1000-8000-00805f9b34fb");
 
-            try
-            {
-                // 소켓 생성
-                mSocket = device.CreateRfcommSocketToServiceRecord(uuid);
-                // RFCOMM 채널을 통한 연결
-                mSocket.Connect();
-
-                // 데이터 송수신을 위한 스트림 열기
-                mOutputStream = mSocket.OutputStream;
-                mInputStream = mSocket.InputStream;
-
-                // 데이터 수신 준비
-                //beginListenForData();
-                // Start the thread to connect with the given device
-                ConnectThread connectThread = new ConnectThread(device);
-                connectThread.Start();
-            }
-            catch (System.Exception e)
-            {
-                // 블루투스 연결 중 오류 발생
-                Log.Debug("CONNECTION",e.ToString());
-                //Finish();   // 어플 종료
-            }
-        }
-
-        protected class ConnectThread : Thread
-        {
-            private BluetoothSocket mmSocket;
-            private BluetoothDevice mmDevice;
-
-            public ConnectThread(BluetoothDevice device)
-            {
-                mmDevice = device;
-                BluetoothSocket tmp = null;
-
-                // Get a BluetoothSocket for a connection with the
-                // given BluetoothDevice
-                try
-                {
-                    tmp = device.CreateRfcommSocketToServiceRecord(applicationUUID);
-                }
-                catch (Java.IO.IOException e)
-                {
-                    Log.Error(TAG, "create() failed", e);
-                }
-                mmSocket = tmp;
-            }
-
-            public override void Run()
-            {
-                Log.Info(TAG, "BEGIN mConnectThread");
-                Name = "ConnectThread";
-                // Make a connection to the BluetoothSocket
-                try
-                {
-                    // This is a blocking call and will only return on a
-                    // successful connection or an exception
-                    mmSocket.Connect();
-                }
-                catch (Java.IO.IOException e)
-                {
-                    try
-                    {
-                        mmSocket.Close();
-                    }
-                    catch (Java.IO.IOException e2)
-                    {
-                        Log.Error(TAG, "unable to close() socket during connection failure", e2);
-                    }
-                    return;
-                }
-            }
-
-            public void Cancel()
-            {
-                try
-                {
-                    mmSocket.Close();
-                }
-                catch (Java.IO.IOException e)
-                {
-                    Log.Error(TAG, "close() of connect socket failed", e);
-                }
-            }
-        }
-
-
-            public class BTReceiver : BroadcastReceiver
-        {
-            Activity _sender;
-
-            public BTReceiver(Activity sender)
-            {
-                _sender = sender;
-            }
-
-            public override void OnReceive(Context context, Intent intent)
-            {
-                string action = intent.Action;
-
-                // When discovery finds a device
-                if (action == BluetoothDevice.ActionFound)
-                {
-                    // Get the BluetoothDevice object from the Intent
-                    BluetoothDevice device = (BluetoothDevice)intent.GetParcelableExtra(BluetoothDevice.ExtraDevice);
-                    // If it's already paired, skip it, because it's been listed already
-                    if (device.BondState != Bond.Bonded)
-                    {
-                        newDevicesArrayAdapter.Add(device.Name + "\n" + device.Address);
-                    }
-                    // When discovery is finished, change the Activity title
-                }
-                else if (action == BluetoothAdapter.ActionDiscoveryFinished)
-                {
-                    _sender.SetProgressBarIndeterminateVisibility(false);
-                    _sender.SetTitle(Resource.String.ApplicationName);
-                    if (newDevicesArrayAdapter.Count == 0)
-                    {
-                        var noDevices = _sender.Resources.GetText(Resource.String.none_found).ToString();
-                        newDevicesArrayAdapter.Add(noDevices);
-                    }
-                }
-            }
-        }
+        
     }
 }
 
