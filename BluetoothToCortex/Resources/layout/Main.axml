@@ -11,7 +11,7 @@
         android:id="@+id/FindBtButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/FindBt" />
+        android:text="@string/find_bt" />
     <TextView
            android:id="@+id/pairedDevice"
            android:text="@string/paired"

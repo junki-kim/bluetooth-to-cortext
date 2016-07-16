@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="FindBt">Find Bluetooth Printer</string>
-    <string name="ApplicationName">BluetoothToCortex</string>
+  <string name="find_bt">Find Bluetooth Printer</string>
+  <string name="app_name">BluetoothToCortex</string>
+  <string name="open_camera">Open Camera</string>
+  <string name="photo_send_button">Send Image To Printer</string>
 
   <!--  BluetoothChat -->
   <string name="send">Send</string>
@@ -23,6 +25,6 @@
   <!-- Options Menu -->
   <string name="connect">Connect a device</string>
   <string name="discoverable">Make discoverable</string>
-  <string name="dectected">페어링 가능한 디바이스(Dectected)</string> 
+  <string name="dectected">페어링 가능한 디바이스(Dectected)</string>
   <string name="paired">페어링된 디바이스(Paired)</string>
 </resources>

@@ -13,7 +13,7 @@ using Java.Lang;
 
 namespace BluetoothToCortex
 {
-    [Activity(Label = "@string/ApplicationName", MainLauncher = true, Icon = "@drawable/icon")]
+    [Activity(Label = "@string/app_name", MainLauncher = false, Icon = "@drawable/icon")]
     public class MainActivity : Activity
     {
         //TAG
@@ -33,15 +33,12 @@ namespace BluetoothToCortex
         // Return Intent extra
         public const string EXTRA_DEVICE_ADDRESS = "device_address";
 
-        //socket
-        private BluetoothSocket mSocket;
+        //UUID
         private static UUID applicationUUID = UUID.FromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
-        private Stream mOutputStream;
-        private Stream mInputStream;
 
         protected override void OnCreate(Bundle bundle)
         {
-
+  
             base.OnCreate(bundle);
 
             // Set our view from the "main" layout resource
@@ -193,9 +190,6 @@ namespace BluetoothToCortex
             BluetoothDevice device = mBluetoothAdapter.GetRemoteDevice(address);
             //connectToSelectdDevice(device);
         }
-
-
-        
     }
 }
 

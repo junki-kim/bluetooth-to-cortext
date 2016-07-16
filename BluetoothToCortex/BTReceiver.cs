@@ -46,7 +46,7 @@ namespace BluetoothToCortex
             else if (action == BluetoothAdapter.ActionDiscoveryFinished)
             {
                 _sender.SetProgressBarIndeterminateVisibility(false);
-                _sender.SetTitle(Resource.String.ApplicationName);
+                _sender.SetTitle(Resource.String.app_name);
                 if (_arrayAdapter.Count == 0)
                 {
                     var noDevices = _sender.Resources.GetText(Resource.String.none_found).ToString();

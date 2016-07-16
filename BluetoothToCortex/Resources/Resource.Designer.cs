@@ -60,20 +60,29 @@ namespace BluetoothToCortex
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f050000
-			public const int FindBtButton = 2131034112;
-			
 			// aapt resource value: 0x7f050003
-			public const int detectedDevice = 2131034115;
+			public const int FindBtButton = 2131034115;
 			
-			// aapt resource value: 0x7f050004
-			public const int deviceListView = 2131034116;
+			// aapt resource value: 0x7f050006
+			public const int detectedDevice = 2131034118;
+			
+			// aapt resource value: 0x7f050007
+			public const int deviceListView = 2131034119;
 			
 			// aapt resource value: 0x7f050001
-			public const int pairedDevice = 2131034113;
+			public const int imageView1 = 2131034113;
+			
+			// aapt resource value: 0x7f050000
+			public const int myButton = 2131034112;
+			
+			// aapt resource value: 0x7f050004
+			public const int pairedDevice = 2131034116;
+			
+			// aapt resource value: 0x7f050005
+			public const int pairedDeviceListView = 2131034117;
 			
 			// aapt resource value: 0x7f050002
-			public const int pairedDeviceListView = 2131034114;
+			public const int photo_send_button = 2131034114;
 			
 			static Id()
 			{
@@ -89,10 +98,13 @@ namespace BluetoothToCortex
 		{
 			
 			// aapt resource value: 0x7f030000
-			public const int device_name = 2130903040;
+			public const int camera_activity = 2130903040;
 			
 			// aapt resource value: 0x7f030001
-			public const int Main = 2130903041;
+			public const int device_name = 2130903041;
+			
+			// aapt resource value: 0x7f030002
+			public const int Main = 2130903042;
 			
 			static Layout()
 			{
@@ -108,61 +120,67 @@ namespace BluetoothToCortex
 		{
 			
 			// aapt resource value: 0x7f040001
-			public const int ApplicationName = 2130968577;
-			
-			// aapt resource value: 0x7f040000
-			public const int FindBt = 2130968576;
-			
-			// aapt resource value: 0x7f040004
-			public const int bt_not_enabled_leaving = 2130968580;
-			
-			// aapt resource value: 0x7f04000e
-			public const int button_scan = 2130968590;
-			
-			// aapt resource value: 0x7f04000f
-			public const int connect = 2130968591;
-			
-			// aapt resource value: 0x7f040011
-			public const int dectected = 2130968593;
-			
-			// aapt resource value: 0x7f040010
-			public const int discoverable = 2130968592;
-			
-			// aapt resource value: 0x7f04000b
-			public const int none_found = 2130968587;
-			
-			// aapt resource value: 0x7f04000a
-			public const int none_paired = 2130968586;
-			
-			// aapt resource value: 0x7f040003
-			public const int not_connected = 2130968579;
-			
-			// aapt resource value: 0x7f040012
-			public const int paired = 2130968594;
-			
-			// aapt resource value: 0x7f040008
-			public const int scanning = 2130968584;
-			
-			// aapt resource value: 0x7f040009
-			public const int select_device = 2130968585;
-			
-			// aapt resource value: 0x7f040002
-			public const int send = 2130968578;
+			public const int app_name = 2130968577;
 			
 			// aapt resource value: 0x7f040006
-			public const int title_connected_to = 2130968582;
+			public const int bt_not_enabled_leaving = 2130968582;
 			
-			// aapt resource value: 0x7f040005
-			public const int title_connecting = 2130968581;
+			// aapt resource value: 0x7f040010
+			public const int button_scan = 2130968592;
 			
-			// aapt resource value: 0x7f040007
-			public const int title_not_connected = 2130968583;
+			// aapt resource value: 0x7f040011
+			public const int connect = 2130968593;
+			
+			// aapt resource value: 0x7f040013
+			public const int dectected = 2130968595;
+			
+			// aapt resource value: 0x7f040012
+			public const int discoverable = 2130968594;
+			
+			// aapt resource value: 0x7f040000
+			public const int find_bt = 2130968576;
 			
 			// aapt resource value: 0x7f04000d
-			public const int title_other_devices = 2130968589;
+			public const int none_found = 2130968589;
 			
 			// aapt resource value: 0x7f04000c
-			public const int title_paired_devices = 2130968588;
+			public const int none_paired = 2130968588;
+			
+			// aapt resource value: 0x7f040005
+			public const int not_connected = 2130968581;
+			
+			// aapt resource value: 0x7f040002
+			public const int open_camera = 2130968578;
+			
+			// aapt resource value: 0x7f040014
+			public const int paired = 2130968596;
+			
+			// aapt resource value: 0x7f040003
+			public const int photo_send_button = 2130968579;
+			
+			// aapt resource value: 0x7f04000a
+			public const int scanning = 2130968586;
+			
+			// aapt resource value: 0x7f04000b
+			public const int select_device = 2130968587;
+			
+			// aapt resource value: 0x7f040004
+			public const int send = 2130968580;
+			
+			// aapt resource value: 0x7f040008
+			public const int title_connected_to = 2130968584;
+			
+			// aapt resource value: 0x7f040007
+			public const int title_connecting = 2130968583;
+			
+			// aapt resource value: 0x7f040009
+			public const int title_not_connected = 2130968585;
+			
+			// aapt resource value: 0x7f04000f
+			public const int title_other_devices = 2130968591;
+			
+			// aapt resource value: 0x7f04000e
+			public const int title_paired_devices = 2130968590;
 			
 			static String()
 			{

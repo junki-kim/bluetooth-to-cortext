@@ -34,7 +34,7 @@ namespace BluetoothToCortex
     class BluetoothManager
     {
         // Debugging
-        private const string TAG = "BluetoothChatService";
+        private const string TAG = "BluetoothManager";
         private const bool Debug = true;
 
         // Name for the SDP record when creating server socket
@@ -493,7 +493,6 @@ namespace BluetoothToCortex
         /// This thread runs during a connection with a remote device.
         /// It handles all incoming and outgoing transmissions.
         /// </summary>
-        // TODO: Convert to a .NET thread
         private class ConnectedThread : Thread
         {
             private BluetoothSocket mmSocket;
