@@ -14,6 +14,7 @@
 * limitations under the License.
 */
 
+using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using Android.Bluetooth;
@@ -41,7 +42,7 @@ namespace BluetoothToCortex
         private const string NAME = "BluetoothChat";
 
         // Unique UUID for this application
-        private static UUID MY_UUID = UUID.FromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
+        private static UUID MY_UUID = UUID.FromString("000011001-0000-1000-8000-00805F9B34FB");
 
         // Member fields
         protected BluetoothAdapter _adapter;
@@ -51,12 +52,15 @@ namespace BluetoothToCortex
         private ConnectedThread connectedThread;
         protected int _state;
 
+        
+
         // Constants that indicate the current connection state
         // TODO: Convert to Enums
         public const int STATE_NONE = 0;       // we're doing nothing
         public const int STATE_LISTEN = 1;     // now listening for incoming connections
         public const int STATE_CONNECTING = 2; // now initiating an outgoing connection
         public const int STATE_CONNECTED = 3;  // now connected to a remote device
+
 
         /// <summary>
         /// Constructor. Prepares a new BluetoothChat session.
@@ -72,6 +76,58 @@ namespace BluetoothToCortex
             _adapter = BluetoothAdapter.DefaultAdapter;
             _state = STATE_NONE;
             _handler = handler;
+        }
+
+        public void DoConnection(BluetoothDevice device)
+        {
+            ConnectingThread cntThread = new ConnectingThread(device);
+            cntThread.Start();
+        }
+
+
+        /*
+         * my thread
+         */
+        private class ConnectingThread : Thread
+        {
+            public BluetoothDevice mRemoteDevice;
+            private BluetoothSocket mSocket;
+            private Stream mOutputStream;
+            private Stream mInputStream;
+            private UUID uuid;
+
+            public ConnectingThread(BluetoothDevice device)
+            {
+                mRemoteDevice = device;
+                uuid = UUID.FromString("00001101-0000-1000-8000-00805f9b34fb");
+            }
+            public override void Run()
+            {           
+                try
+                {
+                    // 소켓 생성
+                    mSocket = mRemoteDevice.CreateRfcommSocketToServiceRecord(uuid);
+                    // RFCOMM 채널을 통한 연결
+                    mSocket.Connect();
+
+                    // 데이터 송수신을 위한 스트림 열기
+                    mOutputStream = mSocket.OutputStream;
+                    mInputStream = mSocket.InputStream;
+
+                    // 데이터 수신 준비
+                    //beginListenForData();
+                }
+                catch (Java.Lang.Exception e)
+                {
+                    // 블루투스 연결 중 오류 발생
+                    Log.Debug("ERRRRRRRRRRRROR", "RREORORORO");
+                }
+            }
+        }
+
+        private BluetoothDevice getDeviceFromBondedList(object selectdDeviceName)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
