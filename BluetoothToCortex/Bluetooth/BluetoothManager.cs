@@ -78,6 +78,7 @@ namespace BluetoothToCortex
             _handler = handler;
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void DoConnection(BluetoothDevice device)
         {
             ConnectingThread cntThread = new ConnectingThread(device);
@@ -503,14 +504,10 @@ namespace BluetoothToCortex
                 {
                     // This is a blocking call and will only return on a
                     // successful connection or an exception
-                    Log.Debug("KJK", "Socket connection try");
                     mmSocket.Connect();
-                    Log.Debug("KJK", "Socket connection try22");
-
                 }
                 catch (Java.IO.IOException e)
                 {
-                    Log.Debug("KJK", "¿¡·¯¾ß ¾¾¹ß");
                     _manager.ConnectionFailed();
                     // Close the socket
                     try
