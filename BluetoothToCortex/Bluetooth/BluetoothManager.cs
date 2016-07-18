@@ -52,8 +52,6 @@ namespace BluetoothToCortex
         private ConnectedThread connectedThread;
         protected int _state;
 
-        
-
         // Constants that indicate the current connection state
         // TODO: Convert to Enums
         public const int STATE_NONE = 0;       // we're doing nothing
@@ -61,16 +59,14 @@ namespace BluetoothToCortex
         public const int STATE_CONNECTING = 2; // now initiating an outgoing connection
         public const int STATE_CONNECTED = 3;  // now connected to a remote device
 
+        //sockets
+        private Stream mOutputStream;
+        private Stream mInputStream;
 
-        /// <summary>
+
         /// Constructor. Prepares a new BluetoothChat session.
-        /// </summary>
-        /// <param name='context'>
         /// The UI Activity Context.
-        /// </param>
-        /// <param name='handler'>
         /// A Handler to send messages back to the UI Activity.
-        /// </param>
         public BluetoothManager(Context context, Handler handler)
         {
             _adapter = BluetoothAdapter.DefaultAdapter;
@@ -78,30 +74,32 @@ namespace BluetoothToCortex
             _handler = handler;
         }
 
-        [MethodImpl(MethodImplOptions.Synchronized)]
         public void DoConnection(BluetoothDevice device)
         {
-            ConnectingThread cntThread = new ConnectingThread(device);
+            ConnectingThread cntThread = new ConnectingThread(device, mOutputStream, mInputStream);
             cntThread.Start();
         }
 
 
         /*
-         * my thread
+         * Connecting thread that connect to the bluetooth device and open socket
          */
         private class ConnectingThread : Thread
         {
             public BluetoothDevice mRemoteDevice;
             private BluetoothSocket mSocket;
+            private UUID uuid;
             private Stream mOutputStream;
             private Stream mInputStream;
-            private UUID uuid;
 
-            public ConnectingThread(BluetoothDevice device)
+            public ConnectingThread(BluetoothDevice device, Stream _mOutputStream, Stream _mInputStream)
             {
                 mRemoteDevice = device;
+                mOutputStream = _mOutputStream;
+                mInputStream = _mInputStream;
                 uuid = UUID.FromString("00001101-0000-1000-8000-00805f9b34fb");
             }
+
             public override void Run()
             {           
                 try
