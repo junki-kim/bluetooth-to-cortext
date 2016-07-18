@@ -416,6 +416,7 @@ namespace BluetoothToCortex
 
             public ConnectThread(BluetoothDevice device, BluetoothManager manager)
             {
+                Log.Debug("KJK", "ConnecteThread Called : " + device.Name);
                 mmDevice = device;
                 _manager = manager;
                 BluetoothSocket tmp = null;
@@ -446,10 +447,14 @@ namespace BluetoothToCortex
                 {
                     // This is a blocking call and will only return on a
                     // successful connection or an exception
+                    Log.Debug("KJK", "Socket connection try");
                     mmSocket.Connect();
+                    Log.Debug("KJK", "Socket connection try22");
+
                 }
                 catch (Java.IO.IOException e)
                 {
+                    Log.Debug("KJK", "¿¡·¯¾ß ¾¾¹ß");
                     _manager.ConnectionFailed();
                     // Close the socket
                     try

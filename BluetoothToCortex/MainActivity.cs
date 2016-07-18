@@ -13,7 +13,7 @@ using Java.Lang;
 
 namespace BluetoothToCortex
 {
-    [Activity(Label = "@string/app_name", MainLauncher = false, Icon = "@drawable/icon")]
+    [Activity(Label = "@string/app_name", MainLauncher = true, Icon = "@drawable/icon")]
     public class MainActivity : Activity
     {
         //TAG
@@ -36,9 +36,12 @@ namespace BluetoothToCortex
         //UUID
         private static UUID applicationUUID = UUID.FromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
 
+        //BluetoothManager
+        BluetoothManager mBtManager;
+
         protected override void OnCreate(Bundle bundle)
         {
-  
+
             base.OnCreate(bundle);
 
             // Set our view from the "main" layout resource
@@ -112,6 +115,8 @@ namespace BluetoothToCortex
                 pairedDevicesArrayAdapter.Add(noDevices);
             }
 
+
+            mBtManager = new BluetoothManager(this, new MyHandler(this));
         }//oncreate
 
         protected override void OnDestroy()
@@ -166,14 +171,6 @@ namespace BluetoothToCortex
             // Get the BLuetoothDevice object
             BluetoothDevice device = mBluetoothAdapter.GetRemoteDevice(address);
 
-            // Create the result Intent and include the MAC address
-            //Intent intent = new Intent();
-            //intent.PutExtra(EXTRA_DEVICE_ADDRESS, address);
-
-            // Set result and finish this Activity
-            //SetResult(Result.Ok, intent);
-            //Finish();
-            // TODO : implement connection
         }
 
         /*
@@ -188,8 +185,58 @@ namespace BluetoothToCortex
 
             // Get the BLuetoothDevice object
             BluetoothDevice device = mBluetoothAdapter.GetRemoteDevice(address);
-            //connectToSelectdDevice(device);
+            mBtManager.Connect(device);
         }
     }
+
+    // Handler 클래스
+    class MyHandler : Handler
+    {
+        public MyHandler(MainActivity activity)
+        {
+        
+        }
+
+        public void handleMessage(Message msg)
+        {
+            switch (msg.What)
+            {
+                case Constants.MESSAGE_STATE_CHANGE:
+                    switch (msg.Arg1)
+                    {
+                        case BluetoothManager.STATE_CONNECTED:
+                            break;
+                        case BluetoothManager.STATE_CONNECTING:
+                            break;
+                        case BluetoothManager.STATE_LISTEN:
+                            break;
+                        case BluetoothManager.STATE_NONE:
+                            break;
+                    }
+                    break;
+                case Constants.MESSAGE_WRITE:
+                    byte[] writeBuf = (byte[])msg.Obj;
+                    // construct a string from the buffer
+                    //var writeMessage = new Java.Lang.String(writeBuf);
+                    //bluetoothChat.conversationArrayAdapter.Add("Me: " + writeMessage);
+                    break;
+                case Constants.MESSAGE_READ:
+                    byte[] readBuf = (byte[])msg.Obj;
+                    // construct a string from the valid bytes in the buffer
+                    var readMessage = new Java.Lang.String(readBuf, 0, msg.Arg1);
+                    //bluetoothChat.conversationArrayAdapter.Add(bluetoothChat.connectedDeviceName + ":  " + readMessage);
+                    break;
+                case Constants.MESSAGE_DEVICE_NAME:
+                    // save the connected device's name
+                    //bluetoothChat.connectedDeviceName = msg.Data.GetString(DEVICE_NAME);
+                    //Toast.MakeText(Application.Context, "Connected to " + bluetoothChat.connectedDeviceName, ToastLength.Short).Show();
+                    break;
+                case Constants.MESSAGE_TOAST:
+                    Toast.MakeText(Application.Context, msg.Data.GetString(Constants.TOAST), ToastLength.Short).Show();
+                    break;
+            }
+        }
+
+    };
 }
 

@@ -24,5 +24,6 @@ namespace BluetoothToCortex
         // Key names received from the BluetoothChatService Handler
         public const String DEVICE_NAME = "device_name";
         public const String TOAST = "toast";
+
     }
 }

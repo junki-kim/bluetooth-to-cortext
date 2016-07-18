@@ -21,11 +21,14 @@ namespace BluetoothToCortex
         public static Bitmap bitmap;
     }
 
-    [Activity(Label = "@string/app_name", MainLauncher = true, Icon = "@drawable/icon")]
+    [Activity(Label = "@string/app_name", MainLauncher = false, Icon = "@drawable/icon")]
     public class CameraActivity : Activity
     {
 
-        private ImageView _imageView;
+        private ImageView mImageView;
+        private ImageView mConvertedImageView;
+        private Bitmap mImageToSend;
+        private Button mSendBtn;
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
         {
@@ -43,7 +46,7 @@ namespace BluetoothToCortex
             // and cause the application to crash.
 
             int height = Resources.DisplayMetrics.HeightPixels;
-            int width = _imageView.Height;
+            int width = mImageView.Height;
 
             App.bitmap = App._file.Path.LoadAndResizeBitmap(width, height);
             Log.Debug("KJK", "height : " + height + " / width : " + width);
@@ -51,8 +54,9 @@ namespace BluetoothToCortex
 
             if (App.bitmap != null)
             {
-                _imageView.SetImageBitmap(App.bitmap);
+                mImageView.SetImageBitmap(App.bitmap);
                 App.bitmap = null;
+                mSendBtn.Visibility = Android.Views.ViewStates.Visible;
             }
 
             // Dispose of the Java side bitmap.
@@ -69,8 +73,10 @@ namespace BluetoothToCortex
                 CreateDirectoryForPictures();
 
                 Button button = FindViewById<Button>(Resource.Id.myButton);
-                _imageView = FindViewById<ImageView>(Resource.Id.imageView1);
+                mImageView = FindViewById<ImageView>(Resource.Id.imageView1);
+                mSendBtn = FindViewById<Button>(Resource.Id.photo_send_button);
                 button.Click += TakeAPicture;
+                mSendBtn.Click += SendPicture;
             }
 
         }
@@ -103,6 +109,11 @@ namespace BluetoothToCortex
             intent.PutExtra(MediaStore.ExtraOutput, Uri.FromFile(App._file));
 
             StartActivityForResult(intent, 0);
+        }
+
+        private void SendPicture(object sender, EventArgs eventArgs)
+        {
+            // TODO: implement send image of _convertedImageView
         }
     }
 }
