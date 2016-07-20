@@ -123,14 +123,16 @@ namespace BluetoothToCortex
                     writeBuffer = Encoding.UTF8.GetBytes(str);
 
                     int i = 0;
+                    while (true)
+                    {
+                        mOutputStream.Write(writeBuffer, 0, writeBuffer.Length);
+                        readBytes = mInputStream.Read(readBuffer, 0, readBuffer.Length);
+                  
 
-                    mOutputStream.Write(writeBuffer, 0, writeBuffer.Length);
-                    readBytes = mInputStream.Read(readBuffer, 0, readBuffer.Length);
-
-                    Log.Debug("Stream Log", "i = " + i);
-                    Log.Debug("Stream Log", "Write : " + writeBuffer);
-                    Log.Debug("Stream Log", "Read  : " + readBuffer);
-
+                        //Log.Debug("Stream Log", "i = " + i);
+                        //Log.Debug("Stream Log", "Write : " + ByteToString(writeBuffer));
+                        Log.Debug("Stream Log", "Read  : " + ByteToString(readBuffer).Trim('\0'));
+                    }
                     // 데이터 수신 준비
                     //beginListenForData();
                 }
@@ -143,6 +145,13 @@ namespace BluetoothToCortex
                 {
                     Log.Debug("BT ERROR", "System Exception");
                 }
+            }
+
+            // 바이트 배열을 String으로 변환 
+            private string ByteToString(byte[] strByte)
+            {
+                string str = Encoding.Default.GetString(strByte);
+                return str;
             }
         }
 
@@ -193,6 +202,8 @@ namespace BluetoothToCortex
                 connectThread = null;
             }
 
+            /*
+
             // Cancel any thread currently running a connection
             if (connectedThread != null)
             {
@@ -206,6 +217,8 @@ namespace BluetoothToCortex
                 acceptThread = new AcceptThread(this);
                 acceptThread.Start();
             }
+
+            */
 
             SetState(STATE_LISTEN);
         }

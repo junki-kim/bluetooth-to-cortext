@@ -187,6 +187,7 @@ namespace BluetoothToCortex
             BluetoothDevice device = mBluetoothAdapter.GetRemoteDevice(address);
             Log.Debug("KJK", "try to connection " + device.Name + " using Bluetooth manage Class");
             mBtManager.DoConnection(device);
+            //mBtManager.Connect(device);
         }
 
 
