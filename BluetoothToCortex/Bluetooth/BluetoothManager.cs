@@ -23,6 +23,7 @@ using Android.OS;
 using Android.Util;
 using Java.Lang;
 using Java.Util;
+using System.Text;
 
 namespace BluetoothToCortex
 {
@@ -42,7 +43,7 @@ namespace BluetoothToCortex
         private const string NAME = "BluetoothChat";
 
         // Unique UUID for this application
-        private static UUID MY_UUID = UUID.FromString("000011001-0000-1000-8000-00805F9B34FB");
+        private static UUID MY_UUID = UUID.FromString("00001101-0000-1000-8000-00805F9B34FB");
 
         // Member fields
         protected BluetoothAdapter _adapter;
@@ -95,13 +96,13 @@ namespace BluetoothToCortex
             public ConnectingThread(BluetoothDevice device, Stream _mOutputStream, Stream _mInputStream)
             {
                 mRemoteDevice = device;
-                mOutputStream = _mOutputStream;
-                mInputStream = _mInputStream;
+                _mOutputStream = mOutputStream;
+                _mInputStream = mInputStream;
                 uuid = UUID.FromString("00001101-0000-1000-8000-00805f9b34fb");
             }
 
             public override void Run()
-            {           
+            {
                 try
                 {
                     // 소켓 생성
@@ -113,13 +114,34 @@ namespace BluetoothToCortex
                     mOutputStream = mSocket.OutputStream;
                     mInputStream = mSocket.InputStream;
 
+                    byte[] writeBuffer = new byte[1024];
+                    byte[] readBuffer = new byte[1024];
+                    int readBytes;
+
+                    //read write test
+                    var str = "Hello M3";
+                    writeBuffer = Encoding.UTF8.GetBytes(str);
+
+                    int i = 0;
+
+                    mOutputStream.Write(writeBuffer, 0, writeBuffer.Length);
+                    readBytes = mInputStream.Read(readBuffer, 0, readBuffer.Length);
+
+                    Log.Debug("Stream Log", "i = " + i);
+                    Log.Debug("Stream Log", "Write : " + writeBuffer);
+                    Log.Debug("Stream Log", "Read  : " + readBuffer);
+
                     // 데이터 수신 준비
                     //beginListenForData();
                 }
                 catch (Java.Lang.Exception e)
                 {
                     // 블루투스 연결 중 오류 발생
-                    Log.Debug("ERRRRRRRRRRRROR", "RREORORORO");
+                    Log.Debug("BT ERROR", "Connection Failed");
+                }
+                catch (System.Exception e)
+                {
+                    Log.Debug("BT ERROR", "System Exception");
                 }
             }
         }
